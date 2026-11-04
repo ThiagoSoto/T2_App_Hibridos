@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Row } from './components/Row';
 
-type Scenario = 'high' | 'low' | 'limit' | 'empty';
+type Scenario = 'high' | 'low' | 'limit' | 'empty' | 'invalid';
 
 type Candidate = {
   id: string;
@@ -16,6 +16,7 @@ const scenarioOptions: { value: Scenario; label: string }[] = [
   { value: 'low', label: 'Baixa' },
   { value: 'limit', label: 'Limite' },
   { value: 'empty', label: 'Vazio' },
+  { value: 'invalid', label: 'Inválido' },
 ];
 
 const candidatesByScenario: Record<Scenario, Candidate[]> = {
@@ -35,13 +36,24 @@ const candidatesByScenario: Record<Scenario, Candidate[]> = {
     { id: 'coral', species: 'Coral-verdadeira', confidence: 0.08 },
   ],
   empty: [],
+  invalid: [
+    { id: 'jararaca', species: 'Jararaca', confidence: 1.4 },
+    { id: 'cascavel', species: 'Cascavel', confidence: 0.12 },
+    { id: 'coral', species: 'Coral-verdadeira', confidence: 0.08 },
+  ],
 };
+
+function isValidConfidence(confidence: number): boolean {
+  return Number.isFinite(confidence) && confidence >= 0 && confidence <= 1;
+}
 
 export default function App() {
   const [scenario, setScenario] = useState<Scenario>('high');
   const candidates = candidatesByScenario[scenario];
   const firstCandidate = candidates[0];
-  const isUncertain = firstCandidate !== undefined && firstCandidate.confidence < 0.8;
+  const isUncertain =
+    firstCandidate !== undefined &&
+    (!isValidConfidence(firstCandidate.confidence) || firstCandidate.confidence < 0.8);
 
   return (
     <View style={styles.container}>
@@ -80,13 +92,17 @@ export default function App() {
         ListEmptyComponent={
           <Text style={styles.emptyMessage}>Nenhuma espécie identificada.</Text>
         }
-        renderItem={({ item, index }) => (
-          <Row
-            species={item.species}
-            confidence={item.confidence}
-            highlighted={index === 0 && !isUncertain}
-          />
-        )}
+        renderItem={({ item, index }) => {
+          const confidenceValid = isValidConfidence(item.confidence);
+          return (
+            <Row
+              species={item.species}
+              confidence={item.confidence}
+              confidenceValid={confidenceValid}
+              highlighted={index === 0 && !isUncertain}
+            />
+          );
+        }}
       />
     </View>
   );

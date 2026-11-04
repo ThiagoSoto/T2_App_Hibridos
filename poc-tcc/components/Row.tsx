@@ -3,20 +3,23 @@ import { StyleSheet, Text, View } from 'react-native';
 type RowProps = {
   species: string;
   confidence: number;
+  confidenceValid: boolean;
   highlighted: boolean;
 };
 
-export function Row({ species, confidence, highlighted }: RowProps) {
+export function Row({ species, confidence, confidenceValid, highlighted }: RowProps) {
   return (
     <View style={[styles.row, highlighted && styles.highlightedRow]}>
       <Text style={[styles.species, highlighted && styles.highlightedSpecies]}>
         {species}
       </Text>
       <Text style={[styles.confidence, highlighted && styles.highlightedSpecies]}>
-        {(confidence * 100).toLocaleString('pt-BR', {
-          minimumFractionDigits: 1,
-          maximumFractionDigits: 1,
-        })}%
+        {confidenceValid
+          ? `${(confidence * 100).toLocaleString('pt-BR', {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 1,
+            })}%`
+          : '—'}
       </Text>
     </View>
   );
