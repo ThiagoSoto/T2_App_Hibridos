@@ -13,7 +13,10 @@ export function Row({ species, confidence, highlighted }: RowProps) {
         {species}
       </Text>
       <Text style={[styles.confidence, highlighted && styles.highlightedSpecies]}>
-        {(confidence * 100).toFixed(1)}%
+        {(confidence * 100).toLocaleString('pt-BR', {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+        })}%
       </Text>
     </View>
   );

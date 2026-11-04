@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Row } from './components/Row';
 
-type Scenario = 'high' | 'low';
+type Scenario = 'high' | 'low' | 'limit';
 
 type Candidate = {
   id: string;
@@ -11,21 +11,33 @@ type Candidate = {
   confidence: number;
 };
 
-const highCandidates: Candidate[] = [
-  { id: 'jararaca', species: 'Jararaca', confidence: 0.93 },
-  { id: 'cascavel', species: 'Cascavel', confidence: 0.04 },
-  { id: 'coral', species: 'Coral-verdadeira', confidence: 0.03 },
+const scenarioOptions: { value: Scenario; label: string }[] = [
+  { value: 'high', label: 'Alta' },
+  { value: 'low', label: 'Baixa' },
+  { value: 'limit', label: 'Limite' },
 ];
 
-const lowCandidates: Candidate[] = [
-  { id: 'jararaca', species: 'Jararaca', confidence: 0.41 },
-  { id: 'cascavel', species: 'Cascavel', confidence: 0.38 },
-  { id: 'coral', species: 'Coral-verdadeira', confidence: 0.12 },
-];
+const candidatesByScenario: Record<Scenario, Candidate[]> = {
+  high: [
+    { id: 'jararaca', species: 'Jararaca', confidence: 0.93 },
+    { id: 'cascavel', species: 'Cascavel', confidence: 0.04 },
+    { id: 'coral', species: 'Coral-verdadeira', confidence: 0.03 },
+  ],
+  low: [
+    { id: 'jararaca', species: 'Jararaca', confidence: 0.41 },
+    { id: 'cascavel', species: 'Cascavel', confidence: 0.38 },
+    { id: 'coral', species: 'Coral-verdadeira', confidence: 0.12 },
+  ],
+  limit: [
+    { id: 'jararaca', species: 'Jararaca', confidence: 0.8 },
+    { id: 'cascavel', species: 'Cascavel', confidence: 0.12 },
+    { id: 'coral', species: 'Coral-verdadeira', confidence: 0.08 },
+  ],
+};
 
 export default function App() {
   const [scenario, setScenario] = useState<Scenario>('high');
-  const candidates = scenario === 'high' ? highCandidates : lowCandidates;
+  const candidates = candidatesByScenario[scenario];
   const isUncertain = candidates[0].confidence < 0.8;
 
   return (
@@ -35,26 +47,21 @@ export default function App() {
       <Text style={styles.title}>Espécies candidatas</Text>
 
       <View style={styles.scenarioControls}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ selected: scenario === 'high' }}
-          onPress={() => setScenario('high')}
-          style={[styles.scenarioButton, scenario === 'high' && styles.activeButton]}
-        >
-          <Text style={[styles.buttonText, scenario === 'high' && styles.activeButtonText]}>
-            Alta
-          </Text>
-        </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ selected: scenario === 'low' }}
-          onPress={() => setScenario('low')}
-          style={[styles.scenarioButton, scenario === 'low' && styles.activeButton]}
-        >
-          <Text style={[styles.buttonText, scenario === 'low' && styles.activeButtonText]}>
-            Baixa
-          </Text>
-        </Pressable>
+        {scenarioOptions.map((option) => (
+          <Pressable
+            key={option.value}
+            accessibilityRole="button"
+            accessibilityState={{ selected: scenario === option.value }}
+            onPress={() => setScenario(option.value)}
+            style={[styles.scenarioButton, scenario === option.value && styles.activeButton]}
+          >
+            <Text
+              style={[styles.buttonText, scenario === option.value && styles.activeButtonText]}
+            >
+              {option.label}
+            </Text>
+          </Pressable>
+        ))}
       </View>
 
       {isUncertain && (
