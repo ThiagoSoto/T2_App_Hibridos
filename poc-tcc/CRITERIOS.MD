@@ -4,8 +4,8 @@ A tela tem cinco botões de cenário, com dados fixos no código: Alta (93% na p
 
 - [X] Em Alta, a primeira linha aparece em destaque (maior, em negrito e com cor diferente), as outras duas aparecem em estilo normal e não há aviso.
 - [X] Em Baixa, aparece o aviso "Resultado incerto. Tente outra foto." e nenhuma das três linhas fica em destaque.
-- [ ] Em Limite, com a primeira em exatamente 80,0%, não aparece aviso e a primeira linha fica em destaque.
-- [ ] Em Vazio, aparece a mensagem "Nenhuma espécie identificada." no lugar das linhas e não aparece aviso.
+- [X] Em Limite, com a primeira em exatamente 80,0%, não aparece aviso e a primeira linha fica em destaque.
+- [X] Em Vazio, aparece a mensagem "Nenhuma espécie identificada." no lugar das linhas e não aparece aviso.
 - [ ] Em Inválido, com confiança fora do intervalo de 0 a 100%, aparece o aviso "Resultado incerto. Tente outra foto.", a linha mostra "—" no lugar da porcentagem, nenhuma linha fica em destaque e o app não quebra.
 - [ ] Ao alternar entre os cinco cenários, o aviso aparece e some e o destaque volta à primeira linha, sem recarregar o app.
 - [ ] Ao abrir o app e alternar por todos os cenários, nenhum aviso de `key` aparece no terminal do Metro.

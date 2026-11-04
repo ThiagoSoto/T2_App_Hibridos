@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Row } from './components/Row';
 
-type Scenario = 'high' | 'low' | 'limit';
+type Scenario = 'high' | 'low' | 'limit' | 'empty';
 
 type Candidate = {
   id: string;
@@ -15,6 +15,7 @@ const scenarioOptions: { value: Scenario; label: string }[] = [
   { value: 'high', label: 'Alta' },
   { value: 'low', label: 'Baixa' },
   { value: 'limit', label: 'Limite' },
+  { value: 'empty', label: 'Vazio' },
 ];
 
 const candidatesByScenario: Record<Scenario, Candidate[]> = {
@@ -33,12 +34,14 @@ const candidatesByScenario: Record<Scenario, Candidate[]> = {
     { id: 'cascavel', species: 'Cascavel', confidence: 0.12 },
     { id: 'coral', species: 'Coral-verdadeira', confidence: 0.08 },
   ],
+  empty: [],
 };
 
 export default function App() {
   const [scenario, setScenario] = useState<Scenario>('high');
   const candidates = candidatesByScenario[scenario];
-  const isUncertain = candidates[0].confidence < 0.8;
+  const firstCandidate = candidates[0];
+  const isUncertain = firstCandidate !== undefined && firstCandidate.confidence < 0.8;
 
   return (
     <View style={styles.container}>
@@ -74,6 +77,9 @@ export default function App() {
         contentContainerStyle={styles.listContent}
         data={candidates}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={
+          <Text style={styles.emptyMessage}>Nenhuma espécie identificada.</Text>
+        }
         renderItem={({ item, index }) => (
           <Row
             species={item.species}
@@ -142,5 +148,11 @@ const styles = StyleSheet.create({
   listContent: {
     gap: 12,
     paddingTop: 20,
+  },
+  emptyMessage: {
+    color: '#58665d',
+    fontSize: 16,
+    paddingVertical: 24,
+    textAlign: 'center',
   },
 });
