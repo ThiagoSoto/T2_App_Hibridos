@@ -9,19 +9,18 @@ type Candidate = {
   id: string;
   species: string;
   confidence: number;
-  highlighted: boolean;
 };
 
 const highCandidates: Candidate[] = [
-  { id: 'jararaca', species: 'Jararaca', confidence: 0.93, highlighted: true },
-  { id: 'cascavel', species: 'Cascavel', confidence: 0.04, highlighted: false },
-  { id: 'coral', species: 'Coral-verdadeira', confidence: 0.03, highlighted: false },
+  { id: 'jararaca', species: 'Jararaca', confidence: 0.93 },
+  { id: 'cascavel', species: 'Cascavel', confidence: 0.04 },
+  { id: 'coral', species: 'Coral-verdadeira', confidence: 0.03 },
 ];
 
 const lowCandidates: Candidate[] = [
-  { id: 'jararaca', species: 'Jararaca', confidence: 0.41, highlighted: false },
-  { id: 'cascavel', species: 'Cascavel', confidence: 0.38, highlighted: false },
-  { id: 'coral', species: 'Coral-verdadeira', confidence: 0.12, highlighted: false },
+  { id: 'jararaca', species: 'Jararaca', confidence: 0.41 },
+  { id: 'cascavel', species: 'Cascavel', confidence: 0.38 },
+  { id: 'coral', species: 'Coral-verdadeira', confidence: 0.12 },
 ];
 
 export default function App() {
@@ -68,11 +67,11 @@ export default function App() {
         contentContainerStyle={styles.listContent}
         data={candidates}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <Row
             species={item.species}
             confidence={item.confidence}
-            highlighted={item.highlighted}
+            highlighted={index === 0 && !isUncertain}
           />
         )}
       />

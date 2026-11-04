@@ -75,6 +75,17 @@ Como percebi: na documentação da FlatList (seção extraData), ele serve para 
 
 O que estava certo: nesta tela o extraData não é necessário para isso; a explicação do agente estava errada.
 
+
+### Erro 2
+
+Pedido: implementar a PoC seguindo o AGENTS.md.
+
+O que veio: o Copilot guardou o destaque em um campo highlighted fixo nos dados de cada cenário, enquanto o aviso era calculado pela regra dos 80%.
+
+Como percebi: lendo o código antes de aceitar o diff. Dava para mudar a confiança e o aviso aparecer com a primeira linha ainda em destaque.
+
+O que estava certo: o destaque deve ser calculado na renderização, com index === 0 e a mesma condição do aviso, e não ficar armazenado nos dados.
+
 ## Resultado e próximos passos no TCC
 - Resultado: [preencher depois de rodar os critérios no aparelho]
 - Próximo passo: levar o aviso de baixa confiança (limiar de 80%) para o app Flutter e ligar a tela à resposta real da API. O limiar vem dos resultados do TCC; a PoC só demonstra o comportamento da tela.
