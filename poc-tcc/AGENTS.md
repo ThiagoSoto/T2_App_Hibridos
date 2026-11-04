@@ -42,15 +42,20 @@ Docs: https://docs.expo.dev/eas/index.md
 
 
 ## Convenções deste projeto
+
 - Não altere arquivos fora do escopo pedido. Explique cada alteração.
 - Componentes ficam em `components/`, um arquivo por componente.
 - Estado nunca é modificado no lugar: sempre gere um novo valor.
 - Valores que podem ser calculados a partir do estado não viram estado.
 - Antes de usar um pacote, confirme na documentação se ele funciona no Expo Go.
+
+
 ## Contexto desta prova de conceito
-- TCC: [o sistema em uma frase].
-- Problema: [o que a prova de conceito resolve].
-- Tecnologia investigada: [pacote ou recurso].
-- Uma tela só, em `App.tsx`: [o que o usuário faz e vê].
+- TCC: OphidIA, app que identifica a espécie de uma cobra a partir de uma foto; o classificador é uma API FastAPI com ConvNeXt-Tiny, e o app mostra a espécie mais provável em destaque com as outras duas do top 3.
+- Problema: avisar o usuário quando a confiança da primeira candidata fica abaixo de 80% (acima disso a acurácia medida é de 98,1%).
+- Tecnologia investigada: `FlatList` (com `renderItem`, `keyExtractor`, `ListEmptyComponent` e `extraData`), renderização condicional e estado derivado.
+- Uma tela só, em `App.tsx`: cinco botões de cenário (Alta, Baixa, Limite, Vazio, Inválido) trocam os dados fixos da lista. Os critérios exatos estão em `CRITERIOS.md`.
+- "Confiança baixa" é um valor calculado a partir da lista (`confidence < 0.8`), nunca um estado.
+- Sem rede, sem câmera e sem pacotes além dos do modelo do Expo.
 - Não usar Expo Router, a menos que a tecnologia investigada seja a navegação.
-- Fora de escopo: login, design final e tudo que não demonstre a pergunta.
+- Fora de escopo: login, câmera, envio da foto, mapa, design final e tudo que não demonstre a pergunta.
