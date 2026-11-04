@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Row } from './components/Row';
 
+const CONFIDENCE_THRESHOLD = 0.8;
+
 type Scenario = 'high' | 'low' | 'limit' | 'empty' | 'invalid';
 
 type Candidate = {
@@ -53,7 +55,8 @@ export default function App() {
   const firstCandidate = candidates[0];
   const isUncertain =
     firstCandidate !== undefined &&
-    (!isValidConfidence(firstCandidate.confidence) || firstCandidate.confidence < 0.8);
+    (!isValidConfidence(firstCandidate.confidence) ||
+      firstCandidate.confidence < CONFIDENCE_THRESHOLD);
 
   return (
     <View style={styles.container}>

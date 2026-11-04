@@ -4,17 +4,11 @@
 O OphidIA é um aplicativo focado em identificar espécies brasileiras de serpentes a partir de fotos enviadas pelo usuário: o app envia a imagem a uma API FastAPI com um classificador ConvNeXt-Tiny de 246 espécies, e mostra a espécie mais provável em destaque junto com as outras duas candidatas do top 3. Nos nossos resultados, a acurácia é de 98,1% quando a confiança passa de 80%, mas o app hoje não faz nada diferente quando a confiança fica abaixo disso.
 
 ## Pergunta de pesquisa
-O meu aplicativo do TCC, quando a confiança da IA é baixa, não deixa essa informação diferente de quando a confiança é alta. Por isso, como a FlatList com renderização condicional avisa o usuário do OphidIA quando a confiança da primeira candidata fica abaixo de 80%, inclusive quando vale exatamente 80% ou quando não há resultado?
+Como a FlatList com renderização condicional mostra, na tela de resultado do app OphidIA, a mensagem "Resultado incerto" na condição de a IA ter menos de 80% de confiança na espécie mais provável?
 
+Definições: confiança é a porcentagem de certeza que a IA dá a cada espécie; confiança baixa é quando a primeira espécie tem menos de 80%; aviso é o texto "Resultado incerto. Tente outra foto." na tela de resultado. A PoC é só essa tela, com dados de exemplo (sem a IA e sem câmera).
 
-Reescrevi a pergunta de pesquisa no formato Como...alguns pontos não ficaram tão fáceis de entender:
-Após a validação com um amigo meu ficaram esses pontos de ajuste: 
-entendeu que eu ia construir a IA que identifica a cobra, não a tela de resultado; 
-disse que "banner de aviso" e "confiança baixa" não ficaram claros. 
-Ajustei: encurtei a pergunta, defini os termos abaixo dela e deixei explícito que a PoC é só a tela de resultado.
-
-Pergunta de Pesquisa consolidada no formato:
-Como a FlatList com renderização condicional mostra, na tela de resultado do app OphidIA, a mensagem “Resultado incerto” na condição de a IA ter menos de 80% de confiança na espécie mais provável?
+Revisão do colega: entendeu que eu ia construir a IA que identifica a cobra, e não a tela de resultado; disse que "banner de aviso" e "confiança baixa" não ficaram claros. Ajustei: encurtei a pergunta, defini os termos acima e deixei explícito que a PoC é só a tela de resultado.
 
 
 
@@ -22,7 +16,7 @@ Trilha (Tabela 1 da apostila): Listas + Estado e efeitos, ambas vistas em aula. 
 
 ## Alternativas consideradas
 
-Alternativas para avisar a baixa confiança, mapeadas pelo Claude e pelo ChatGPT (exercício 3). A coluna "Expo Go" veio da IA e foi conferida na documentação.
+Alternativas para avisar a baixa confiança, mapeadas pelo Claude e pelo ChatGPT (exercício 3). A coluna "Expo Go" veio da IA. Conferi na documentação o expo-notifications (local funciona; push remoto não no Android). As demais são componentes do próprio React Native.
 
 | Opção (quem citou) | Serve para | Expo Go | Decisão |
 |--------------------|------------|---------|---------|
@@ -41,7 +35,7 @@ Alternativas para avisar a baixa confiança, mapeadas pelo Claude e pelo ChatGPT
 | Opção | Serve para | Decisão |
 |-------|------------|---------|
 | `FlatList` | Listas com `renderItem` (que recebe `item` e `index`), `keyExtractor` e `ListEmptyComponent` | Sim, é o que a disciplina cobre e a documentação confirma as três propriedades |
-| `ScrollView` + `.map()` | Poucos itens fixos, renderizados todos de uma vez | Não funcionaria para 3 itens, mas não cobre `ListEmptyComponent` |
+| `ScrollView` + `.map()` | Poucos itens fixos, renderizados todos de uma vez | Não, pq a documentação confirma que renderiza todos os filhos de uma vez e não tem ListEmptyComponent pronto, então a lista vazia teria que ser tratada à mão |
 | `SectionList` | Listas agrupadas em seções | Não, não há seções |
 | `useState` + `useEffect` para guardar "confiança baixa" | Guardar em estado um valor calculado | Não, o que dá para calcular a partir do estado se calcula durante a renderização |
 
@@ -86,6 +80,12 @@ Como percebi: lendo o código antes de aceitar o diff. Dava para mudar a confian
 
 O que estava certo: o destaque deve ser calculado na renderização, com index === 0 e a mesma condição do aviso, e não ficar armazenado nos dados.
 
+## Alteração pequena com o agente (exercício 9)
+Pedido: trocar o 0.8 do aviso por uma constante com nome.
+Diff: Mudou apenas no App.tsx, excluindo uma linha e adicionando quatro linhas.
+O diff mudou só o necessário? Sim, só mudou o necessário.
+
+
 ## Resultado e próximos passos no TCC
-- Resultado: [preencher depois de rodar os critérios no aparelho]
-- Próximo passo: levar o aviso de baixa confiança (limiar de 80%) para o app Flutter e ligar a tela à resposta real da API. O limiar vem dos resultados do TCC; a PoC só demonstra o comportamento da tela.
+- Resultado: PoC passou nos 5 critérios do CRITERIOS.md, verificados no aparelho físico (Android, Expo Go, SDK 58), cada um com seu commit: Alta, Baixa, Limite, Vazio e Inválido. Respondendo à pergunta: com a FlatList, o aviso e o destaque saem da mesma condição, calculada durante a renderização (confiança da primeira candidata menor que 0,80), sem estado extra; o ListEmptyComponent cobre a lista vazia; e uma regra única de validade cobre a confiança fora de 0 a 1. O extraData não foi necessário e nenhum pacote foi instalado. Limite observado: a tela mostra a confiança arredondada em uma casa, mas o aviso usa o valor real, então 0,7996 apareceria como 80,0% com aviso.
+- Próximo passo: levar o aviso de baixa confiança (limiar de 80%) para o app Flutter e ligar a tela à resposta real da API. O limiar vem dos resultados do TCC.
